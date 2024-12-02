@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/router' // Correct import for client-side routing
 import { useAuth } from '../context/auth-context'
 import Loading from '../loading'
 
@@ -11,27 +11,33 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
   const [mounted, setMounted] = useState(false)
 
-  // Ensures the effect is only run on the client
+  // Ensures useRouter is only accessed after the component has mounted on the client side
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  // Redirect logic after hydration and isLoading state is complete
+  // Redirect logic to be executed after the component is mounted
   useEffect(() => {
-    if (!isLoading && user === null && mounted) {
-      // If not logged in, redirect to login
-      router.replace('/login')
+    if (mounted && !isLoading && user === null) {
+      if (router.asPath !== '/login') {
+        router.replace('/login')
+      }
     }
-  }, [user, isLoading, router, mounted])
+  }, [mounted, isLoading, user, router])
 
-  // Show loading screen during the initial load
+  // Show a loading state or spinner until the app has mounted and authentication is resolved
   if (!mounted || isLoading) return <Loading />
 
-  // Once mounted and no longer loading, we check the user status
-  if (user === null) {
+  // Show an error message if the user is not logged in and not on the login page
+  if (user === null && router.asPath !== '/login') {
     return <div>Error: Authentication failed. Please log in.</div>
   }
 
-  // If user is authenticated, render the protected children
-  return <>{children}</>
+  // If the login page is being accessed, render the login page
+  if (router.asPath === '/login') {
+    return <>{children}</>
+  }
+
+  // If the user is authenticated, render the protected route's children
+  return user ? <>{children}</> : null
 }
