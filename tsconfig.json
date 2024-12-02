@@ -17,15 +17,17 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
+    "baseUrl": ".", // Set baseUrl to the root directory
+    "paths": {
+      "@/*": [
+        "src/*"
+      ] // Adjust to point to the src folder
+    },
     "plugins": [
       {
         "name": "next"
       }
-    ],
-    "baseUrl": ".",  // Set baseUrl to the root directory
-    "paths": {
-      "@/*": ["src/*"]  // Adjust to point to your components folder
-    }
+    ]
   },
   "include": [
     "next-env.d.ts",
