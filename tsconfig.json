@@ -21,7 +21,11 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "baseUrl": ".",  // Set baseUrl to the root directory
+    "paths": {
+      "@/*": ["src/*"]  // Adjust to point to your components folder
+    }
   },
   "include": [
     "next-env.d.ts",
