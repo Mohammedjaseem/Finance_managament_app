@@ -5,19 +5,32 @@ import { TypeForm } from '../components/type-form'
 
 export default function ExpenseTypes() {
   const [expenseTypes, setExpenseTypes] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     fetchExpenseTypes()
   }, [])
 
   const fetchExpenseTypes = () => {
+    setLoading(true)
     fetch('/api/get_expense_types/')
-      .then(response => response.json())
-      .then(data => setExpenseTypes(data.data))
-      .catch(error => console.error('Error fetching expense types:', error))
+      .then((response) => response.json())
+      .then((data) => {
+        setExpenseTypes(data.data)
+        setLoading(false)
+      })
+      .catch((error) => {
+        console.error('Error fetching expense types:', error)
+        setLoading(false)
+      })
   }
 
   const handleAddExpenseType = (name: string) => {
+    if (!name.trim()) {
+      alert('Expense type name cannot be empty')
+      return
+    }
+
     fetch('/api/add_expense_type/', {
       method: 'POST',
       headers: {
@@ -25,12 +38,14 @@ export default function ExpenseTypes() {
       },
       body: JSON.stringify({ name }),
     })
-      .then(response => response.json())
-      .then(() => {
-        fetchExpenseTypes()
+      .then((response) => response.json())
+      .then((newType) => {
+        setExpenseTypes((prevTypes) => [...prevTypes, newType])  // Directly update the state
       })
-      .catch(error => console.error('Error adding expense type:', error))
+      .catch((error) => console.error('Error adding expense type:', error))
   }
+
+  if (loading) return <div>Loading...</div>
 
   return (
     <div className="space-y-8">
@@ -58,4 +73,3 @@ export default function ExpenseTypes() {
     </div>
   )
 }
-

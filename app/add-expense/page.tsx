@@ -11,14 +11,21 @@ export default function AddExpense() {
     expense_type: '',
     amount: '',
     remarks: '',
-    date: new Date().toISOString().split('T')[0],
+    date: '',
   })
 
   useEffect(() => {
+    // Fetch expense types on component mount
     fetch('/api/get_expense_types/')
       .then(response => response.json())
       .then(data => setExpenseTypes(data.data))
       .catch(error => console.error('Error fetching expense types:', error))
+
+    // Set the current date after mounting to avoid hydration mismatch
+    setFormData(prevData => ({
+      ...prevData,
+      date: new Date().toISOString().split('T')[0],
+    }))
   }, [])
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -38,7 +45,7 @@ export default function AddExpense() {
           expense_type: '',
           amount: '',
           remarks: '',
-          date: new Date().toISOString().split('T')[0],
+          date: new Date().toISOString().split('T')[0], // Reset date after submission
         })
       })
       .catch(error => console.error('Error adding expense:', error))
@@ -118,4 +125,3 @@ export default function AddExpense() {
     </div>
   )
 }
-

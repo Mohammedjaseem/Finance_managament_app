@@ -1,5 +1,3 @@
-'use client'
-
 import { useState, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -13,6 +11,7 @@ export default function AddIncome() {
     remarks: '',
     date: new Date().toISOString().split('T')[0],
   })
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     fetch('/api/get_income_types/')
@@ -23,6 +22,7 @@ export default function AddIncome() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    setLoading(true)
     fetch('/api/add_daily_income/', {
       method: 'POST',
       headers: {
@@ -33,15 +33,18 @@ export default function AddIncome() {
       .then(response => response.json())
       .then(data => {
         console.log('Income added:', data)
-        // Reset form or show success message
         setFormData({
           income_type: '',
           amount: '',
           remarks: '',
           date: new Date().toISOString().split('T')[0],
         })
+        setLoading(false)
       })
-      .catch(error => console.error('Error adding income:', error))
+      .catch(error => {
+        console.error('Error adding income:', error)
+        setLoading(false)
+      })
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -113,9 +116,10 @@ export default function AddIncome() {
             required
           />
         </div>
-        <Button type="submit">Add Income</Button>
+        <Button type="submit" disabled={loading}>
+          {loading ? 'Adding Income...' : 'Add Income'}
+        </Button>
       </form>
     </div>
   )
 }
-

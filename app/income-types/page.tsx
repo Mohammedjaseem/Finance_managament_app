@@ -5,19 +5,32 @@ import { TypeForm } from '../components/type-form'
 
 export default function IncomeTypes() {
   const [incomeTypes, setIncomeTypes] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     fetchIncomeTypes()
   }, [])
 
   const fetchIncomeTypes = () => {
+    setLoading(true)
     fetch('/api/get_income_types/')
-      .then(response => response.json())
-      .then(data => setIncomeTypes(data.data))
-      .catch(error => console.error('Error fetching income types:', error))
+      .then((response) => response.json())
+      .then((data) => {
+        setIncomeTypes(data.data)
+        setLoading(false)
+      })
+      .catch((error) => {
+        console.error('Error fetching income types:', error)
+        setLoading(false)
+      })
   }
 
   const handleAddIncomeType = (name: string) => {
+    if (!name.trim()) {
+      alert('Income type name cannot be empty')
+      return
+    }
+
     fetch('/api/add_income_type/', {
       method: 'POST',
       headers: {
@@ -25,12 +38,14 @@ export default function IncomeTypes() {
       },
       body: JSON.stringify({ name }),
     })
-      .then(response => response.json())
-      .then(() => {
-        fetchIncomeTypes()
+      .then((response) => response.json())
+      .then((newType) => {
+        setIncomeTypes((prevTypes) => [...prevTypes, newType])  // Directly update the state
       })
-      .catch(error => console.error('Error adding income type:', error))
+      .catch((error) => console.error('Error adding income type:', error))
   }
+
+  if (loading) return <div>Loading...</div>
 
   return (
     <div className="space-y-8">
@@ -58,4 +73,3 @@ export default function IncomeTypes() {
     </div>
   )
 }
-

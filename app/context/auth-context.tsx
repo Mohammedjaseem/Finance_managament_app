@@ -25,6 +25,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [loginError, setLoginError] = useState<string | null>(null)
   const router = useRouter()
 
   useEffect(() => {
@@ -48,12 +49,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (username: string, password: string) => {
     setIsLoading(true)
+    setLoginError(null) // Reset error state
     try {
       const formData = new FormData()
       formData.append('username', username)
       formData.append('password', password)
 
-      const response = await fetch('https://example.com/api/login/', {
+      const response = await fetch('https://conext.in/custom_users/api/login-connect-df47d265-8086-40ca-500023-2d2Jassy78yo3d/', {
         method: 'POST',
         body: formData,
       })
@@ -75,6 +77,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(userData)
       router.replace('/')
     } catch (error) {
+      setLoginError('Login failed. Please check your credentials.')
       console.error('Login error:', error)
     } finally {
       setIsLoading(false)
