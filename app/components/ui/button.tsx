@@ -4,12 +4,13 @@ import React from 'react';
 interface ButtonProps {
   onClick?: () => void;
   children: React.ReactNode;
-  type?: 'button' | 'submit' | 'reset';  // Allow for type prop
+  type?: 'button' | 'submit' | 'reset';  // Add support for type
+  disabled?: boolean;  // Add support for disabled
 }
 
-const Button: React.FC<ButtonProps> = ({ onClick, children, type = 'button' }) => {
+const Button: React.FC<ButtonProps> = ({ onClick, children, type = 'button', disabled = false }) => {
   return (
-    <button onClick={onClick} type={type} className="btn">
+    <button onClick={onClick} type={type} disabled={disabled} className={`btn ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}>
       {children}
     </button>
   );
