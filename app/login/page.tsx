@@ -2,19 +2,33 @@
 
 import { useState } from 'react'
 import { useAuth } from '../context/auth-context'
+import { useRouter } from 'next/router'
 
 export default function LoginPage() {
   const { login } = useAuth()
+  const router = useRouter()
+
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (!username || !password) {
+      setError('Please fill in both fields.')
+      return
+    }
+
+    setLoading(true)
     try {
       await login(username, password)
+      router.push('/dashboard') // Redirect to a protected page
     } catch (err) {
       setError('Invalid credentials. Please try again.')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -31,6 +45,7 @@ export default function LoginPage() {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             className="w-full p-2 border rounded"
+            autoFocus
           />
         </div>
         <div className="mb-4">
@@ -43,8 +58,12 @@ export default function LoginPage() {
             className="w-full p-2 border rounded"
           />
         </div>
-        <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded">
-          Login
+        <button
+          type="submit"
+          className={`w-full bg-blue-500 text-white py-2 rounded ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+          disabled={loading}
+        >
+          {loading ? 'Logging in...' : 'Login'}
         </button>
       </form>
     </div>

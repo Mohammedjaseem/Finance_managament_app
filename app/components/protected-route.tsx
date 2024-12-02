@@ -1,4 +1,3 @@
-// src/components/ProtectedRoute.tsx
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -7,7 +6,7 @@ import { useAuth } from '../context/auth-context'
 import Loading from '../loading'
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { user, isLoading } = useAuth() // error removed from here
+  const { user, isLoading } = useAuth()
   const router = useRouter()
 
   const [mounted, setMounted] = useState(false)
@@ -17,20 +16,22 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
     setMounted(true)
   }, [])
 
-  // Redirect logic after hydration
+  // Redirect logic after hydration and isLoading state is complete
   useEffect(() => {
     if (!isLoading && user === null && mounted) {
+      // If not logged in, redirect to login
       router.replace('/login')
     }
   }, [user, isLoading, router, mounted])
 
+  // Show loading screen during the initial load
   if (!mounted || isLoading) return <Loading />
 
-  // Handle error logic, for example showing an error message if user is null
+  // Once mounted and no longer loading, we check the user status
   if (user === null) {
-    // Show error message or redirect
     return <div>Error: Authentication failed. Please log in.</div>
   }
 
-  return user ? <>{children}</> : null
+  // If user is authenticated, render the protected children
+  return <>{children}</>
 }
