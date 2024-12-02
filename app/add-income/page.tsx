@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Button } from "app/components/ui/ button"
+import { Button } from "app/components/ui/button"
 import { Input } from "app/components/ui/input"
 import { Select } from "app/components/ui/select"
 
