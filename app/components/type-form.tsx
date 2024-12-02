@@ -35,8 +35,14 @@ export function TypeForm({ type, onSubmit }: TypeFormProps) {
         <Input
           type="text"
           id="name"
+          name="name"  {/* Add the 'name' prop here */}
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => {
+            setName(e.target.value)
+            if (error) {
+              setError(null)
+            }
+          }}
           required
           className="mt-1"
           placeholder={`Enter ${type} type name`}

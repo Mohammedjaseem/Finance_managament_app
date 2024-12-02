@@ -1,12 +1,13 @@
-'use client'; // Add this line at the top of your file
+'use client' 
 
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { Home, DollarSign, CreditCard, PlusCircle, List } from 'lucide-react';
+import Link from 'next/link'
+import { Home, DollarSign, CreditCard, PlusCircle, List } from 'lucide-react'
+import { usePathname } from 'next/navigation' // Import usePathname from next/navigation
 
 export function Sidebar() {
-  const router = useRouter();
-  const isActive = (path: string) => router.pathname === path ? 'bg-gray-100 text-gray-900' : 'text-gray-700';
+  const pathname = usePathname() // Use usePathname to get the current path
+
+  const isActive = (path: string) => pathname === path ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
 
   return (
     <aside className="w-64 bg-white shadow-md">
@@ -45,5 +46,5 @@ export function Sidebar() {
         </ul>
       </nav>
     </aside>
-  );
+  )
 }
