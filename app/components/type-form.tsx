@@ -35,7 +35,7 @@ export function TypeForm({ type, onSubmit }: TypeFormProps) {
         <Input
           type="text"
           id="name"
-          name="name"  {/* Add the 'name' prop here */}
+          name="name"  {/* Commented properly inside JSX */}
           value={name}
           onChange={(e) => {
             setName(e.target.value)
